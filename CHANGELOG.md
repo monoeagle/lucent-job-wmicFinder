@@ -5,6 +5,16 @@ Alle nennenswerten Änderungen an diesem Projekt.
 Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unreleased]
+
+### Behoben
+
+- Die Ausschluss- und Endungsliste in der Report-Fußzeile wird jetzt ordinal sortiert.
+  Die kulturabhängige Standardsortierung von `Sort-Object` ordnet Satzzeichen (`.`, `_`)
+  zwischen Windows PowerShell 5.1 und PowerShell 7 unterschiedlich, wodurch die Fußzeile
+  versionsabhängig driftete. `[Array]::Sort` mit `OrdinalIgnoreCase` erzeugt eine über
+  beide Versionen identische Ausgabe und bleibt case-insensitiv.
+
 ## [1.1.0] - 2026-09-11
 
 ### Hinzugefügt
