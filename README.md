@@ -15,14 +15,14 @@ sichtbar, wo überall noch aufgeräumt werden muss.
 ## Aufruf
 
 ```powershell
-# Ordner scannen -- der Report öffnet sich anschließend im Browser
+# Ordner scannen -- am Ende steht der Pfad des Reports auf der Konsole
 .\Find-WmicUsage.ps1 -Path C:\Projekte
 
 # Mehrere Quellen, davon eine Netzwerkfreigabe
 .\Find-WmicUsage.ps1 -Path \\fs01\skripte$, D:\Tools -OutputPath C:\Temp\wmic.html
 
-# Nur Skriptdateien, Ergebnis als CSV, ohne Browser
-.\Find-WmicUsage.ps1 -Path C:\Projekte -Extension ps1,bat,cmd,vbs -NoOpen -PassThru |
+# Nur Skriptdateien, Ergebnis zusätzlich als CSV
+.\Find-WmicUsage.ps1 -Path C:\Projekte -Extension ps1,bat,cmd,vbs -PassThru |
     Export-Csv .\wmic.csv -NoTypeInformation -Encoding UTF8
 
 # Quellen über die Pipeline
@@ -55,8 +55,8 @@ Remote-WMI-Abfrage gegen einen anderen Rechner, Ergebnis nach `%TEMP%` — das M
 jede Heuristik aus Lateral-Movement-Werkzeugen.
 
 Nach der Trennung enthält `Find-WmicUsage.ps1` **null** solcher Literale, **keine**
-Byte-Schreiboperationen, **kein** rekursives Löschen und genau **einen** schreibenden
-Dateiaufruf (den Report). Ob HP Sure Click damit zufrieden ist, zeigt erst dein Rechner —
+Byte-Schreiboperationen, **kein** rekursives Löschen, **keinen** prozessstartenden Befehl
+(per Parser gegengeprüft) und genau **einen** schreibenden Dateiaufruf (den Report). Ob HP Sure Click damit zufrieden ist, zeigt erst dein Rechner —
 nachgewiesen ist bisher nur, dass die Auslöser weg sind und beide Fassungen zeilengleiche
 Reports liefern.
 
@@ -122,7 +122,6 @@ aus. Ein markierter Ordner wird nur mit `-Force` geleert und neu befüllt.
 | `-Extension` | 24 Skript-/Code-/Konfig-Endungen (siehe Report-Fußzeile) | Zu durchsuchende Dateiendungen, ohne Punkt. |
 | `-ExcludeDirectory` | `.git .svn .hg node_modules bin obj _deps .archiv` | Verzeichnisnamen, deren Unterbaum gar nicht erst betreten wird. |
 | `-MaxFileSizeMB` | `10` | Größere Dateien werden übersprungen und in der Fußzeile gezählt. |
-| `-NoOpen` | *(aus)* | Unterdrückt das automatische Öffnen des Reports im Browser. |
 | `-PassThru` | *(aus)* | Fundstellen zusätzlich als Objekte auf die Pipeline geben. |
 
 ### Testdaten erzeugen (`New-WmicSampleData.ps1`)
@@ -160,8 +159,18 @@ gesammelt und im Report in einem eigenen Abschnitt ausgewiesen. Sie sind ausdrü
 ## Der Report
 
 Eine einzelne HTML-Datei, alles inline — kein CDN, keine externen Requests, funktioniert
-offline und auf abgeschotteten Rechnern. Nach dem Scan öffnet er sich automatisch im
-Standardbrowser; `-NoOpen` unterdrückt das.
+offline und auf abgeschotteten Rechnern.
+
+**Das Skript öffnet den Report nicht.** Es nennt am Ende nur seinen Pfad auf der Konsole:
+
+```
+  Report abgelegt unter:
+    C:\Projekte\wmic-report_20260911-143012.html
+```
+
+Das ist Absicht: Ein Skript, das eine Datei schreibt und die anschließend startet, ist die
+Bauform eines Droppers — unabhängig davon, was es tatsächlich tut. Genau daran schlug
+HP Sure Click an. Pfad kopieren und selbst öffnen.
 
 ![Report im Browser](docs/report-screenshot.png)
 

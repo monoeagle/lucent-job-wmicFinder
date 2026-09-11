@@ -7,14 +7,20 @@
 #              einen eigenstaendigen HTML-Report.
 #  Autor     : tobias philipp <tobias@philipp.team>
 #  Repository: github.com/monoeagle/lucent-job-wmicFinder
-#  Version   : 1.2.0
+#  Version   : 1.3.0
 #  Stand     : 2026-09-11
 #  Benoetigt : Windows PowerShell 5.1 oder PowerShell 7+
 #------------------------------------------------------------------------------
-#  NUR LESEND. Schreibt genau eine Datei: den HTML-Report. Enthaelt keine
-#  ausfuehrbaren wmic-Kommandozeilen -- der Testdaten-Generator liegt in
-#  New-WmicSampleData.ps1, weil er ausfuehrbare Dateien anlegt und damit fuer
-#  eine Verhaltensanalyse wie ein Dropper aussieht (HP Sure Click schlug an).
+#  NUR LESEND. Schreibt genau eine Datei -- den HTML-Report -- und startet
+#  keinen Prozess. Enthaelt weder ausfuehrbare wmic-Kommandozeilen noch
+#  Start-Process/Invoke-Item. Der Report wird NICHT geoeffnet; das Skript nennt
+#  nur seinen Pfad auf der Konsole.
+#
+#  Hintergrund: HP Sure Click stufte eine fruehere Fassung als Schadsoftware
+#  ein. Zwei Bauformen darin sind von Schadsoftware nicht zu unterscheiden --
+#  Dateien mit WMI-Kommandozeilen auf die Platte schreiben (jetzt in
+#  New-WmicSampleData.ps1) und aus dem Skript heraus einen Prozess starten
+#  (jetzt entfernt).
 #------------------------------------------------------------------------------
 #  AUFBAU
 #    param ..................... Quellpfade, Filter, Ausgabe
@@ -29,6 +35,9 @@
 #      nicht als Beispiel im Kommentar. Genau daran ist die Vorgaengerfassung
 #      bei HP Sure Click haengengeblieben. Testdaten gehoeren in
 #      New-WmicSampleData.ps1.
+#    - Kein Start-Process, Invoke-Item oder & auf eine erzeugte Datei. Ein
+#      Skript, das schreibt und das Geschriebene dann startet, ist die Bauform
+#      eines Droppers -- unabhaengig davon, was es tatsaechlich tut.
 #    - Der Quelltext dieser Datei bleibt bewusst reines ASCII.
 #    - Kodierung beim Lesen: Get-Content ist bewusst nicht im Einsatz. 5.1
 #      schreibt .ps1 per Default als UTF-16; ohne eigene BOM-Erkennung faellt
@@ -37,6 +46,9 @@
 #      echten Fund, ein falsches "Aktiv" kostet nur einen Blick.
 #------------------------------------------------------------------------------
 #  AENDERUNGEN
+#    1.3.0  2026-09-11  Report wird nicht mehr geoeffnet; -NoOpen entfaellt,
+#                       Start-Process ist aus der Datei verschwunden. Der Pfad
+#                       steht am Ende auf der Konsole
 #    1.2.0  2026-09-11  Testdaten-Generator nach New-WmicSampleData.ps1
 #                       ausgelagert; -CreateSampleData und -Force entfallen.
 #                       Damit enthaelt diese Datei keine wmic-Literale mehr
@@ -85,17 +97,14 @@
 .PARAMETER MaxFileSizeMB
     Dateien oberhalb dieser Groesse werden uebersprungen und gezaehlt.
 
-.PARAMETER NoOpen
-    Unterdrueckt das automatische Oeffnen des Reports im Browser. Ohne diesen
-    Schalter wird der Report nach dem Scan geoeffnet.
-
 .PARAMETER PassThru
     Gibt die Fundstellen zusaetzlich als Objekte auf die Pipeline aus.
 
 .EXAMPLE
     .\Find-WmicUsage.ps1 -Path C:\Projekte
 
-    Scannt und oeffnet den Report anschliessend im Browser.
+    Scannt und nennt am Ende den Pfad des Reports. Geoeffnet wird er nicht --
+    den Pfad aus der Konsole kopieren und selbst oeffnen.
 
 .EXAMPLE
     .\New-WmicSampleData.ps1 -Path C:\Temp\wmic-test
@@ -108,7 +117,7 @@
     .\Find-WmicUsage.ps1 -Path \\fs01\skripte$, D:\Tools -OutputPath C:\Temp\wmic.html
 
 .EXAMPLE
-    .\Find-WmicUsage.ps1 -Path C:\Projekte -Extension ps1,bat,cmd -PassThru -NoOpen |
+    .\Find-WmicUsage.ps1 -Path C:\Projekte -Extension ps1,bat,cmd -PassThru |
         Export-Csv .\wmic.csv -NoTypeInformation -Encoding UTF8
 
 .NOTES
@@ -138,8 +147,6 @@ param(
 
     [ValidateRange(1, 2048)]
     [int]$MaxFileSizeMB = 10,
-
-    [switch]$NoOpen,
 
     [switch]$PassThru
 )
@@ -311,33 +318,6 @@ end {
         [void]$sb.Append((ConvertTo-HtmlText $text.Substring($pos)))
         if ($cutEnd) { [void]$sb.Append('<span class="cut">&hellip;</span>') }
         $sb.ToString()
-    }
-
-    function Open-Report {
-        <#
-            Oeffnet den Report im Standardbrowser.
-
-            Invoke-Item reicht dafuer nicht plattformuebergreifend, und
-            $IsLinux/$IsMacOS existieren in Windows PowerShell 5.1 gar nicht --
-            deshalb die Abfrage ueber Get-Variable statt direkt.
-        #>
-        param([string]$FullPath)
-
-        $platform = 'Windows'
-        $v = Get-Variable -Name 'IsLinux' -ErrorAction SilentlyContinue
-        if ($v -and $v.Value) { $platform = 'Linux' }
-        $v = Get-Variable -Name 'IsMacOS' -ErrorAction SilentlyContinue
-        if ($v -and $v.Value) { $platform = 'MacOS' }
-
-        try {
-            switch ($platform) {
-                'Linux' { Start-Process -FilePath 'xdg-open' -ArgumentList $FullPath | Out-Null }
-                'MacOS' { Start-Process -FilePath 'open' -ArgumentList $FullPath | Out-Null }
-                default { Start-Process -FilePath $FullPath | Out-Null }
-            }
-        } catch {
-            Write-Warning ('Report konnte nicht geoeffnet werden ({0}). Bitte manuell oeffnen: {1}' -f $_.Exception.Message, $FullPath)
-        }
     }
 
     #endregion
@@ -784,10 +764,14 @@ footer dd{margin:0;word-break:break-all}
     if ($problems.Count -gt 0) {
         Write-Warning ('{0} Pfad(e) konnten nicht gelesen werden - siehe Report.' -f $problems.Count)
     }
-    Write-Host ('  Report               : {0}' -f $OutputPath)
-    Write-Host ''
 
-    if (-not $NoOpen) { Open-Report -FullPath $OutputPath }
+    # Das Skript oeffnet den Report bewusst NICHT selbst -- siehe Kopf.
+    # Der Pfad steht deshalb allein und unveraendert in einer eigenen Zeile,
+    # damit er sich aus der Konsole kopieren laesst.
+    Write-Host ''
+    Write-Host '  Report abgelegt unter:'
+    Write-Host ('    {0}' -f $OutputPath)
+    Write-Host ''
 
     if ($PassThru) { $findings }
 }

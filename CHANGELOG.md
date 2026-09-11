@@ -15,6 +15,29 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
   versionsabhängig driftete. `[Array]::Sort` mit `OrdinalIgnoreCase` erzeugt eine über
   beide Versionen identische Ausgabe und bleibt case-insensitiv.
 
+## [1.3.0] - 2026-09-11
+
+### Geändert
+
+- **Der Report wird nicht mehr automatisch geöffnet.** `Start-Process` ist vollständig aus
+  `Find-WmicUsage.ps1` verschwunden, ebenso der Schalter `-NoOpen`. Das Skript nennt am Ende
+  nur noch den Pfad des Reports auf der Konsole, in einer eigenen Zeile zum Kopieren.
+
+  Grund ist dieselbe Fehlerklasse wie bei 1.2.0: Ein Skript, das eine Datei schreibt und die
+  anschließend startet, ist die Bauform eines Droppers — unabhängig davon, was es tatsächlich
+  tut. HP Sure Click meldet **`Win32.Malware-Behavioural`**, also ein Urteil über beobachtetes
+  *Verhalten*, nicht über Inhalte.
+
+  Per Parser gegengeprüft: Das Skript ruft nur noch `ConvertTo-HtmlText`, `Format-CodeLine`,
+  `Get-Date`, `Get-HitStatus`, `Get-LineIndex`, `Get-Location`, `Group-Object`, `Join-Path`,
+  `New-Item`, `New-Object`, `Out-Null`, `Read-SourceText`, `Set-StrictMode`, `Sort-Object`,
+  `Test-Path`, `Where-Object`, `Write-Host`, `Write-Progress` und `Write-Warning` auf —
+  kein `Start-Process`, `Invoke-Item`, `Invoke-Expression` oder `Start-Job`.
+
+### Hinweis
+
+- Ob HP Sure Click danach schweigt, ist weiterhin **nicht verifiziert**.
+
 ## [1.2.0] - 2026-09-11
 
 ### Geändert
