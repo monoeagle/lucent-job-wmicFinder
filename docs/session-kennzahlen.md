@@ -4,9 +4,9 @@ Eine Zeile je Session. Ab Session 1 geführt, damit die Projekt-KPIs keine Lück
 Git-abgeleitete Zahlen werden **nach** dem letzten Inhalts-Commit erhoben und zählen den
 Nachtrag-Commit mit.
 
-| # | Datum | Modell | Tokens gesamt | Commits Session (Repo) | Version | Dateien getrackt | Dateien angefasst | feat / fix / docs | LOC Code | LOC Doku | Subagenten | Verifiziert auf | Notiz |
+| # | Datum | Modell | Tokens gesamt | Commits Session (Repo) | Version | Dateien getrackt | Dateien angefasst | feat / fix / refactor / docs | LOC Code | LOC Doku | Subagenten | Verifiziert auf | Notiz |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 7 (10) | – → 1.1.0 | 16 | 15 | 1 / 1 / 5 | 1162 | 483 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; Repo + privates GitHub-Remote; History geglättet; parallele Nutzer-Commits per Rebase integriert |
+| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 11 (14) | – → 1.3.0 | 19 | 18 | 1 / 1 / 2 / 7 | 1218 | 781 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; nach Malware-Einstufung durch HP Sure Click in Scanner + Generator getrennt |
 
 ## Feldnotizen zu Session 1
 
@@ -51,3 +51,25 @@ war falsch escaped). Alle drei Details im Insight; die Fehlerklasse ist dieselbe
 
 **Offen:** Windows PowerShell 5.1 ist ungeprüft — hier lief ausschließlich pwsh 7.4.6
 unter Linux. Das ist der einzige offene Verifikationspunkt des Projekts.
+
+**Nachtrag 13:23 — zweiter Teil der Session.** Nach dem ersten Handoff meldete HP Sure Click
+`Win32.Malware-Behavioural` für `Find-WmicUsage.ps1`. Daraus wurden zwei Releases:
+
+- **1.2.0** Testdaten-Generator nach `New-WmicSampleData.ps1` ausgelagert — alle 30
+  ausführbaren `wmic`-Literale des Projekts lagen dort, keines im Scan-Code.
+- **1.3.0** `Start-Process` entfernt, Report wird nicht mehr geöffnet, nur sein Pfad
+  ausgegeben.
+
+Die Zahlen oben beschreiben den Stand danach. **LOC Code (1218)** ist jetzt die Summe
+beider Skripte: Scanner 777 + Generator 441 — der Scanner allein ist von 1163 auf
+777 Zeilen geschrumpft.
+
+**Review-gefundene Fehler (5):** die drei aus dem ersten Handoff plus zwei aus der
+Verifikation dieses Teils — `-NoOpen` stand nach dem Entfernen noch im README, und ein
+`grep` auf `Start-Process` meldete drei Treffer, die alle in Kopfkommentaren standen (der
+Code war sauber; belegt hat es erst der Parser).
+
+**Fehlpässe eigener Prüfungen (5):** die vier aus dem ersten Handoff plus der
+`grep`-Fehlalarm auf die eigenen Kommentarzeilen. Dieselbe Fehlerklasse, fünftes Mal.
+
+**Nicht verifiziert:** ob Sure Click die neue Fassung durchlässt. Der Test steht aus.
