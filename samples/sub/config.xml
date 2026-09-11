@@ -1,0 +1,6 @@
+<config>
+  <!-- Alte Abfrage:
+       wmic nicconfig get ipaddress
+  -->
+  <command>wmic os get version</command>
+</config>

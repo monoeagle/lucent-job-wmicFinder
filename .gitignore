@@ -1,0 +1,24 @@
+# Arbeitsumgebung -- bleibt lokal, gehoert nicht ins Repo
+.claude/
+
+# Generierte Reports und Auswertungen
+wmic-report_*.html
+*.csv
+
+# Build-/Laufzeit-Artefakte (siehe .claude/rules/git.md)
+**/__pycache__/
+*.pyc
+**/.pytest_cache/
+**/venv/
+**/.venv*/
+**/dist/
+**/build/
+**/site/
+logs/
+screenshots/
+*.zip
+
+# node_modules gehoert nie ins Repo - ausser der Testfixture, die beweist,
+# dass der Scanner ausgeschlossene Unterbaeume wirklich ueberspringt.
+**/node_modules/
+!samples/node_modules/
