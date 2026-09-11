@@ -206,7 +206,7 @@ HP Sure Click an. Pfad kopieren und selbst öffnen.
 Generatorlauf sofort prüfbar ist:
 
 ```powershell
-.\Find-WmicUsage.ps1 -Path .\samples -NoOpen
+.\Find-WmicUsage.ps1 -Path .\samples
 ```
 
 Erwartet:
