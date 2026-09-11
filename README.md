@@ -136,6 +136,8 @@ Eine einzelne HTML-Datei, alles inline — kein CDN, keine externen Requests, fu
 offline und auf abgeschotteten Rechnern. Nach dem Scan öffnet er sich automatisch im
 Standardbrowser; `-NoOpen` unterdrückt das.
 
+![Report im Browser](docs/report-screenshot.png)
+
 - **Kacheln im Kopf:** Dateien mit Treffern · Stellen gesamt · davon aktiv ·
   auskommentiert · Dateien durchsucht · nicht lesbar · Laufzeit
 - **Filterleiste:** Freitextsuche über Pfade, Umschalter „nur aktive Treffer",
