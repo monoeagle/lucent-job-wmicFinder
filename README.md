@@ -33,13 +33,40 @@ Get-ChildItem D:\Repos -Directory | .\Find-WmicUsage.ps1
 > übergeben — das ist eine Eigenheit von `-File`, nicht des Skripts. Für mehrere Pfade
 > `pwsh -Command "& .\Find-WmicUsage.ps1 -Path 'a','b'"` verwenden.
 
+## Zwei Dateien, und warum
+
+| Datei | Rolle |
+|---|---|
+| `Find-WmicUsage.ps1` | **Das Werkzeug.** Liest nur und schreibt genau eine Datei: den Report. Enthält keine ausführbaren `wmic`-Kommandozeilen. Das ist die Datei, die auf Zielsysteme kommt. |
+| `New-WmicSampleData.ps1` | **Entwickler-Werkzeug.** Erzeugt den Testbaum. Gehört nicht auf Zielsysteme. |
+
+Die Trennung hat einen konkreten Anlass: Solange der Generator im Scanner steckte, schlug
+**HP Sure Click** beim Skript an. Nachvollziehbar — der Generator legt `.bat`-, `.cmd`-,
+`.vbs`-, `.reg`- und `.ps1`-Dateien mit WMI-Kommandozeilen an, baut eine Binärdatei mit
+NUL-Bytes und kann ein Verzeichnis rekursiv leeren. Als Testdatensatz ist das gewollt, für
+eine Verhaltensanalyse ist es von einem Dropper nicht zu unterscheiden. Besonders diese
+Zeile stand als Literal im Skript:
+
+```
+wmic /node:"%REMOTE%" logicaldisk get freespace,size /format:csv > "%TEMP%\disk.csv"
+```
+
+Remote-WMI-Abfrage gegen einen anderen Rechner, Ergebnis nach `%TEMP%` — das Muster kennt
+jede Heuristik aus Lateral-Movement-Werkzeugen.
+
+Nach der Trennung enthält `Find-WmicUsage.ps1` **null** solcher Literale, **keine**
+Byte-Schreiboperationen, **kein** rekursives Löschen und genau **einen** schreibenden
+Dateiaufruf (den Report). Ob HP Sure Click damit zufrieden ist, zeigt erst dein Rechner —
+nachgewiesen ist bisher nur, dass die Auslöser weg sind und beide Fassungen zeilengleiche
+Reports liefern.
+
 ## Testdaten erzeugen und dagegen prüfen
 
 Zwei Läufe: erst einen Testbaum anlegen, dann dagegen scannen.
 
 ```powershell
 # Lauf 1 -- Testdaten anlegen, gibt die Soll-Werte aus
-.\Find-WmicUsage.ps1 -CreateSampleData C:\Temp\wmic-test
+.\New-WmicSampleData.ps1 -Path C:\Temp\wmic-test
 
 # Lauf 2 -- dagegen scannen, muss die Soll-Werte treffen
 .\Find-WmicUsage.ps1 -Path C:\Temp\wmic-test
@@ -98,11 +125,11 @@ aus. Ein markierter Ordner wird nur mit `-Force` geleert und neu befüllt.
 | `-NoOpen` | *(aus)* | Unterdrückt das automatische Öffnen des Reports im Browser. |
 | `-PassThru` | *(aus)* | Fundstellen zusätzlich als Objekte auf die Pipeline geben. |
 
-### Testdaten erzeugen
+### Testdaten erzeugen (`New-WmicSampleData.ps1`)
 
 | Parameter | Bedeutung |
 |---|---|
-| `-CreateSampleData <Pfad>` | Legt den Testbaum an und gibt die Soll-Werte aus. Schließt alle Scan-Parameter aus. |
+| `-Path <Pfad>` | Zielverzeichnis für den Testbaum. |
 | `-Force` | Leert ein bereits erzeugtes Sampledaten-Verzeichnis und legt es neu an. |
 
 ## Wie erkannt wird
@@ -182,4 +209,4 @@ Erwartet:
 ```
 
 Der vollständige Baum inklusive Größenlimit-, Binär- und Umlaut-Fällen entsteht über
-`-CreateSampleData`.
+`New-WmicSampleData.ps1`.

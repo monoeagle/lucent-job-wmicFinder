@@ -15,6 +15,31 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
   versionsabhängig driftete. `[Array]::Sort` mit `OrdinalIgnoreCase` erzeugt eine über
   beide Versionen identische Ausgabe und bleibt case-insensitiv.
 
+## [1.2.0] - 2026-09-11
+
+### Geändert
+
+- **Testdaten-Generator in eine eigene Datei ausgelagert:** `New-WmicSampleData.ps1`.
+  `Find-WmicUsage.ps1` verliert dadurch `-CreateSampleData` und `-Force` und hat wieder
+  nur einen Parametersatz.
+
+  Anlass war ein Fund von **HP Sure Click**, das die bisherige Einzeldatei als Schadsoftware
+  einstufte. Nachvollziehbar: Der Generator legt `.bat`-, `.cmd`-, `.vbs`-, `.reg`- und
+  `.ps1`-Dateien mit WMI-Kommandozeilen an, setzt eine Binärdatei aus Rohbytes inklusive
+  `0x00` zusammen und kann ein Verzeichnis rekursiv leeren — als Testdatensatz gewollt, für
+  eine Verhaltensanalyse von einem Dropper nicht zu unterscheiden. Alle 30 ausführbaren
+  `wmic`-Literale des Projekts lagen in dieser Region, keines im Scan-Code.
+
+  `Find-WmicUsage.ps1` enthält jetzt null solcher Literale, keine Byte-Schreiboperationen,
+  kein rekursives Löschen und genau einen schreibenden Dateiaufruf: den Report. Beide
+  Fassungen liefern nachweislich zeilengleiche Reports.
+
+### Hinweis
+
+- Ob HP Sure Click nach der Trennung schweigt, ist **nicht verifiziert** — geprüft wurde
+  nur, dass die auslösenden Konstrukte aus dem Scanner verschwunden sind und das Verhalten
+  unverändert ist.
+
 ## [1.1.0] - 2026-09-11
 
 ### Hinzugefügt
