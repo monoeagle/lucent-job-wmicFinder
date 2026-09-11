@@ -52,6 +52,10 @@ die nicht rot werden kann, ist schlimmer als keine** — sie erzeugt Zuversicht 
 2. **Ein kaputter Regex in einer Zählprüfung** meldete „0 Einträge im Code" und direkt
    darunter „alle im README genannt" — weil die Schleife über null Elemente lief. Ein
    Fehlpass, der wie ein Beleg aussah.
+3. **Derselbe Fehler ein drittes Mal**, beim Zählen der Standard-Endungen: ein falsch
+   escapter Ausdruck lieferte 0 statt 24. Hier fiel er nur auf, weil die Prüfung gegen
+   eine erwartete Zahl lief statt gegen „ist es leer?" — **eine Prüfung mit Sollwert
+   scheitert sichtbar, eine mit Leerheitsannahme nicht.**
 
 **Lehre:** Jede Prüfung, deren Ergebnis „alles in Ordnung" lautet, einmal absichtlich
 kaputtmachen und sehen, ob sie rot wird. Bei Zählprüfungen die Zählung selbst ausgeben —
