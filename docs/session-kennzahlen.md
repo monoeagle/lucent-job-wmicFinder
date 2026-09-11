@@ -6,7 +6,7 @@ Nachtrag-Commit mit.
 
 | # | Datum | Modell | Tokens gesamt | Commits | Version | Dateien getrackt | Dateien angefasst | feat / fix / docs | LOC Code | LOC Doku | Subagenten | Verifiziert auf | Notiz |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 4 | – → 1.1.0 | 15 | 15 | 1 / 1 / 2 | 1157 | 442 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; Repo + privates GitHub-Remote; History auf einen Commit geglättet |
+| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 5 | – → 1.1.0 | 15 | 15 | 1 / 1 / 3 | 1157 | 442 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; Repo + privates GitHub-Remote; History auf einen Commit geglättet |
 
 ## Feldnotizen zu Session 1
 
@@ -15,11 +15,13 @@ lesbar — lieber als Lücke markiert als mit einer plausiblen Zahl gefüllt. Ab
 Sessionende eintragen; damit fehlen die Token-KPIs (Tokens/Commit, Tokens/Feature) für
 Session 1 dauerhaft.
 
-**Commits (4):** `feat` (Werkzeug + Generator, nach dem Squash ein Commit), `fix`
-(Get-Help-Leerzeile + Handoff-Artefakte), `docs` (diese Zeile) und `docs` (Korrektur zweier
-Zahlen, die Runde 2 der Handoff-Verifikation in genau dieser Datei gefunden hat). Die
-ursprünglichen drei Commits wurden auf Wunsch zu einem zusammengezogen; die Zahl beschreibt
-die History nach dem Squash, nicht die Zahl der Arbeitsschritte.
+**Commits (5):** `feat` (Werkzeug + Generator, nach dem Squash ein Commit), `fix`
+(Get-Help-Leerzeile + Handoff-Artefakte) und drei `docs`-Commits: diese Zeile, die Korrektur
+zweier geschätzter Zahlen aus Runde 2, und die Korrektur der dadurch selbst verschobenen
+Zeilenzahlen aus Runde 3. Die letzten beiden sind kein Zufall — **jede Korrektur an dieser
+Datei verändert Zahlen, die in ihr stehen.** Die ursprünglichen drei Commits wurden auf
+Wunsch zu einem zusammengezogen; die Zahl beschreibt die History nach dem Squash, nicht die
+Zahl der Arbeitsschritte.
 
 **Dateien angefasst = getrackt (15):** Session 1 eines neuen Projekts — jede Datei ist neu.
 
@@ -27,8 +29,8 @@ die History nach dem Squash, nicht die Zahl der Arbeitsschritte.
 Sampledaten-Definition (18 Einträge) und 117 Zeilen eingebettetes CSS (69) und JS (48) für
 den Report.
 
-**LOC Doku (442):** README 183, CHANGELOG 63, Insight 82, Handoff 114.
-Doku-zu-Code-Verhältnis 0,38.
+**LOC Doku (446):** README 183, CHANGELOG 63, Insight 86, Handoff 114 — ohne diese
+Datei, die sich mit jeder Korrektur selbst ändert. Doku-zu-Code-Verhältnis 0,39.
 
 **Tests:** kein Testframework (kein Pester). Verifiziert wurde über zwei
 Sampledaten-Läufe, deren Soll-Werte das Skript selbst ausgibt: `samples/` (6 Dateien,
