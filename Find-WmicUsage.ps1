@@ -12,13 +12,13 @@
 #  Benoetigt : Windows PowerShell 5.1 oder PowerShell 7+
 #------------------------------------------------------------------------------
 #  AUFBAU
-#    param / Parametersaetze .... Scan | CreateSample (schliessen sich aus)
-#    region Sampledaten ......... Definitionstabelle + Erzeugung des Testbaums
-#    region Konstanten .......... Suchregex, Kommentarmarker je Dateityp
-#    region Hilfsfunktionen ..... Kodierung, Zeilenindex, Einstufung, HTML
-#    region Kandidaten .......... Verzeichnis-Walker mit Unterbaum-Schnitt
-#    region Durchsuchen ......... Treffer je Datei ermitteln
-#    region Report .............. HTML bauen, schreiben und oeffnen
+#    param / Parametersaetze ... Scan | CreateSample (schliessen sich aus)
+#    region Sampledaten ........ Definitionstabelle + Erzeugung des Testbaums
+#    region Konstanten ......... Suchregex, Kommentarmarker je Dateityp
+#    region Hilfsfunktionen .... Kodierung, Zeilenindex, Einstufung, HTML
+#    region Kandidaten einsammeln  Verzeichnis-Walker mit Unterbaum-Schnitt
+#    region Dateien durchsuchen .. Treffer je Datei ermitteln
+#    region Report bauen ....... HTML bauen, schreiben und oeffnen
 #------------------------------------------------------------------------------
 #  HINWEISE FUER AENDERUNGEN
 #    - Sampledaten: Dateiinhalt UND Soll-Trefferzahl stehen in derselben
@@ -38,7 +38,13 @@
 #    1.1.0  2026-09-11  Sampledaten-Generator (-CreateSampleData); Report wird
 #                       nach dem Scan automatisch geoeffnet (-NoOpen unterdrueckt)
 #    1.0.0  2026-09-11  Erste Fassung
+#------------------------------------------------------------------------------
+#  ACHTUNG: Die Leerzeile zwischen diesem Banner und dem <# .SYNOPSIS #>-Block
+#  muss bleiben. Steht eine #-Zeile unmittelbar davor, liest PowerShell beides
+#  als EINEN Kommentarblock -- Get-Help findet dann keine Hilfe mehr und gibt
+#  nur noch die Syntax aus. Faellt ohne Funktionstest nicht auf.
 #==============================================================================
+
 <#
 .SYNOPSIS
     Durchsucht Quellordner rekursiv nach Verwendungen von wmic und erstellt einen HTML-Report.

@@ -33,7 +33,9 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
   Verzeichnis ohne die Markierung `.wmic-sampledata` wird auch mit `-Force` nicht
   angetastet, damit ein verrutschter Zielpfad kein echtes Verzeichnis ausräumt.
 - Entwickler-Header am Dateianfang: Projekt, Zweck, Autor, Repository, Version, Stand,
-  Landkarte der Regionen, Hinweise für Änderungen und Änderungshistorie.
+  Landkarte der Regionen, Hinweise für Änderungen und Änderungshistorie. Zwischen Banner
+  und `<# .SYNOPSIS #>`-Block steht zwingend eine Leerzeile — ohne sie liest PowerShell
+  beides als einen Kommentarblock und `Get-Help` findet keine Hilfe mehr.
 
 ### Geändert
 
