@@ -1062,9 +1062,14 @@ footer dd{margin:0;word-break:break-all}
     [void]$sb.AppendLine('<footer>')
     [void]$sb.AppendLine('<strong>Scan-Parameter</strong>')
     [void]$sb.AppendLine('<dl>')
+    # Ordinal statt Sort-Object sortieren: die kulturabhaengige Standardsortierung
+    # ordnet Satzzeichen (. _) zwischen 5.1 und 7 unterschiedlich, wodurch der Report
+    # sonst versionsabhaengig driftet. OrdinalIgnoreCase bleibt case-insensitiv wie zuvor.
+    $extSorted = [string[]]$Extension;        [System.Array]::Sort($extSorted, [System.StringComparer]::OrdinalIgnoreCase)
+    $exSorted  = [string[]]$ExcludeDirectory; [System.Array]::Sort($exSorted,  [System.StringComparer]::OrdinalIgnoreCase)
     [void]$sb.AppendFormat('<dt>Quellordner</dt><dd>{0}</dd>', (ConvertTo-HtmlText (($roots.ToArray()) -join '; '))).AppendLine()
-    [void]$sb.AppendFormat('<dt>Endungen</dt><dd>{0}</dd>', (ConvertTo-HtmlText (($Extension | Sort-Object) -join ', '))).AppendLine()
-    [void]$sb.AppendFormat('<dt>Ausgeschlossen</dt><dd>{0}</dd>', (ConvertTo-HtmlText (($ExcludeDirectory | Sort-Object) -join ', '))).AppendLine()
+    [void]$sb.AppendFormat('<dt>Endungen</dt><dd>{0}</dd>', (ConvertTo-HtmlText ($extSorted -join ', '))).AppendLine()
+    [void]$sb.AppendFormat('<dt>Ausgeschlossen</dt><dd>{0}</dd>', (ConvertTo-HtmlText ($exSorted -join ', '))).AppendLine()
     [void]$sb.AppendFormat('<dt>Groessenlimit</dt><dd>{0} MB &middot; {1} Datei(en) uebersprungen</dd>', $MaxFileSizeMB, $skippedTooLarge).AppendLine()
     [void]$sb.AppendFormat('<dt>Als binaer erkannt</dt><dd>{0} Datei(en)</dd>', $skippedBinary).AppendLine()
     [void]$sb.AppendFormat('<dt>Kandidaten</dt><dd>{0} gefunden &middot; {1} gelesen</dd>', $total, $scanned).AppendLine()
