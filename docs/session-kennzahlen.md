@@ -4,9 +4,9 @@ Eine Zeile je Session. Ab Session 1 geführt, damit die Projekt-KPIs keine Lück
 Git-abgeleitete Zahlen werden **nach** dem letzten Inhalts-Commit erhoben und zählen den
 Nachtrag-Commit mit.
 
-| # | Datum | Modell | Tokens gesamt | Commits | Version | Dateien getrackt | Dateien angefasst | feat / fix / docs | LOC Code | LOC Doku | Subagenten | Verifiziert auf | Notiz |
+| # | Datum | Modell | Tokens gesamt | Commits Session (Repo) | Version | Dateien getrackt | Dateien angefasst | feat / fix / docs | LOC Code | LOC Doku | Subagenten | Verifiziert auf | Notiz |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 5 | – → 1.1.0 | 15 | 15 | 1 / 1 / 3 | 1157 | 442 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; Repo + privates GitHub-Remote; History auf einen Commit geglättet |
+| 1 | 2026-09-11 | Opus 5 (1M) | nicht ausgelesen | 7 (10) | – → 1.1.0 | 16 | 15 | 1 / 1 / 5 | 1162 | 483 | 0 | pwsh 7.4.6 (Linux) · **WinPS 5.1 offen** | Projekt von null; Repo + privates GitHub-Remote; History geglättet; parallele Nutzer-Commits per Rebase integriert |
 
 ## Feldnotizen zu Session 1
 
@@ -15,7 +15,7 @@ lesbar — lieber als Lücke markiert als mit einer plausiblen Zahl gefüllt. Ab
 Sessionende eintragen; damit fehlen die Token-KPIs (Tokens/Commit, Tokens/Feature) für
 Session 1 dauerhaft.
 
-**Commits (5):** `feat` (Werkzeug + Generator, nach dem Squash ein Commit), `fix`
+**Commits — 7 aus dieser Session, 10 im Repo:** `feat` (Werkzeug + Generator, nach dem Squash ein Commit), `fix`
 (Get-Help-Leerzeile + Handoff-Artefakte) und drei `docs`-Commits: diese Zeile, die Korrektur
 zweier geschätzter Zahlen aus Runde 2, und die Korrektur der dadurch selbst verschobenen
 Zeilenzahlen aus Runde 3. Die letzten beiden sind kein Zufall — **jede Korrektur an dieser
@@ -23,13 +23,14 @@ Datei verändert Zahlen, die in ihr stehen.** Die ursprünglichen drei Commits w
 Wunsch zu einem zusammengezogen; die Zahl beschreibt die History nach dem Squash, nicht die
 Zahl der Arbeitsschritte.
 
-**Dateien angefasst = getrackt (15):** Session 1 eines neuen Projekts — jede Datei ist neu.
+**Dateien angefasst (15) vs. getrackt (16):** Session 1 eines neuen Projekts — jede Datei
+ist neu. Die 16. ist `docs/report-screenshot.png` aus den parallelen Nutzer-Commits.
 
-**LOC Code (1157):** `Find-WmicUsage.ps1`, eine Datei. Davon 181 Zeilen
+**LOC Code (1162):** `Find-WmicUsage.ps1`, eine Datei. Davon 181 Zeilen
 Sampledaten-Definition (18 Einträge) und 117 Zeilen eingebettetes CSS (69) und JS (48) für
 den Report.
 
-**LOC Doku (446):** README 183, CHANGELOG 63, Insight 86, Handoff 114 — ohne diese
+**LOC Doku (483):** README 185, CHANGELOG 73, Insight 94, Handoff 131 — ohne diese
 Datei, die sich mit jeder Korrektur selbst ändert. Doku-zu-Code-Verhältnis 0,39.
 
 **Tests:** kein Testframework (kein Pester). Verifiziert wurde über zwei

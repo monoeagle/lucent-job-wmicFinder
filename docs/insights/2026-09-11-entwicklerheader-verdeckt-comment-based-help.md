@@ -57,9 +57,17 @@ die nicht rot werden kann, ist schlimmer als keine** — sie erzeugt Zuversicht 
    eine erwartete Zahl lief statt gegen „ist es leer?" — **eine Prüfung mit Sollwert
    scheitert sichtbar, eine mit Leerheitsannahme nicht.**
 
+4. **Der teuerste der vier:** Eine Zahl wurde im Fließtext einer Datei korrigiert, aber
+   nicht in der Tabellenzeile derselben Datei. Die Prüfung verglich den frisch berechneten
+   Wert mit dem, was ich gerade in den Fließtext geschrieben hatte — **eine Zahl gegen sich
+   selbst.** Sie meldete „OK", während die Tabelle daneben weiter den alten Wert trug. Erst
+   ein `grep` auf die Tabellenzeile machte es sichtbar.
+
 **Lehre:** Jede Prüfung, deren Ergebnis „alles in Ordnung" lautet, einmal absichtlich
 kaputtmachen und sehen, ob sie rot wird. Bei Zählprüfungen die Zählung selbst ausgeben —
-eine 0 fällt auf, ein stilles „alle in Ordnung" nicht.
+eine 0 fällt auf, ein stilles „alle in Ordnung" nicht. Und bei Dokumenten: **gegen die
+Datei prüfen, nicht gegen den eigenen Rechenweg.** Steht dieselbe Zahl an zwei Stellen
+(Tabelle und Prosa), müssen beide Stellen im Prüfausdruck vorkommen.
 
 ## `git rm --cached` staged nur die halbe Absicht
 
